@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.27;
 
-import {SonikDrop} from "../contracts/facets/erc20facets/SonikDrop.sol";
+import {SonikDrop} from "../src/facets/erc20facets/SonikDrop.sol";
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {GetProof} from "./helpers/GetProof.sol";
 

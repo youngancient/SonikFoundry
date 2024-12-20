@@ -9,4 +9,4 @@ fs_permissions = [{ access = "read", path = "./script" }]
 
 # See more config options https://github.com/foundry-rs/foundry/tree/master/config
 optimizer = true
-optimizer_runs = 600
+optimizer_runs = 200
