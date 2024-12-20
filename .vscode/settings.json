@@ -1,5 +1,7 @@
 {
     "wake.compiler.solc.remappings": [
-        "forge-std/=lib/forge-std/src/"
+        "ds-test/=lib/forge-std/lib/ds-test/src/",
+        "solidity-stringutils/=lib/solidity-stringutils/",
+        "@openzeppelin/=lib/openzeppelin-contracts/"
     ]
 }
