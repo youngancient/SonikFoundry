@@ -28,7 +28,7 @@ contract SoniKDeployer is Script {
         airdropFactoryFacet = new AirdropFactoryFacet{salt: SALT_AIRDROP}();
         console.log("AirdropFactoryFacet deployed at:", address(airdropFactoryFacet));
 
-        // poapFactoryFacet = new PoapFactoryFacet{salt: SALT_POAP}();
-        // console.log("PoapFactoryFacet deployed at:", address(poapFactoryFacet));
+        poapFactoryFacet = new PoapFactoryFacet{salt: SALT_POAP}();
+        console.log("PoapFactoryFacet deployed at:", address(poapFactoryFacet));
     }
 }
