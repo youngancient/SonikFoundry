@@ -12,7 +12,7 @@ contract SoniKDeployer is Script {
     AirdropFactoryFacet airdropFactoryFacet;
     PoapFactoryFacet poapFactoryFacet;
 
-    bytes32 constant SALT_AIRDROP = keccak256("SonikDrop_AirdropFactoryFacet");
+    bytes32 constant SALT_AIRDROP = keccak256("SonikDropAirdropFactoryFacet");
     bytes32 constant SALT_POAP = keccak256("SonikDrop_PoapFactoryFacet");
 
     function run() external {
@@ -28,7 +28,7 @@ contract SoniKDeployer is Script {
         airdropFactoryFacet = new AirdropFactoryFacet{salt: SALT_AIRDROP}();
         console.log("AirdropFactoryFacet deployed at:", address(airdropFactoryFacet));
 
-        poapFactoryFacet = new PoapFactoryFacet{salt: SALT_POAP}();
-        console.log("PoapFactoryFacet deployed at:", address(poapFactoryFacet));
+        // poapFactoryFacet = new PoapFactoryFacet{salt: SALT_POAP}();
+        // console.log("PoapFactoryFacet deployed at:", address(poapFactoryFacet));
     }
 }
