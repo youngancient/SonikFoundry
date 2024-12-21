@@ -33,8 +33,9 @@ contract AirdropFactoryFacet {
             revert Errors.ZeroValueDetected();
         }
 
-        SonikDrop _newSonik =
-            new SonikDrop(msg.sender, _tokenAddress, _merkleRoot, _name, _nftAddress, _claimTime, _noOfClaimers);
+        SonikDrop _newSonik = new SonikDrop(
+            msg.sender, _tokenAddress, _merkleRoot, _name, _nftAddress, _claimTime, _noOfClaimers, _totalOutputTokens
+        );
 
         bool success = IERC20(_tokenAddress).transferFrom(msg.sender, address(_newSonik), _totalOutputTokens);
         require(success, Errors.TransferFailed());
