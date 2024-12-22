@@ -32,7 +32,7 @@ contract SonikDropTest is GetProof {
     function setUp() public {
         owner = msg.sender;
         testToken = new TestERC20();
-        sonikDrop = new SonikDrop(msg.sender, address(testToken), merkleRoot, "test ", address(0), 0, 10);
+        sonikDrop = new SonikDrop(msg.sender, address(testToken), merkleRoot, "test ", address(0), 0, 10, 25 ether);
         emit log_address(owner);
         testToken.transfer(address(sonikDrop), 25 ether);
         (user1, keyUser1) = makeAddrAndKey("user1");
