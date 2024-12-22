@@ -27,6 +27,7 @@ contract SonikDrop {
 
     uint256 internal totalNoOfClaimers;
     uint256 internal totalNoOfClaimed;
+    uint256 public totalOutputTokens;
 
     uint256 internal totalAmountSpent; // total for airdrop token spent
 
@@ -39,7 +40,8 @@ contract SonikDrop {
         string memory _name,
         address _nftAddress,
         uint256 _claimTime,
-        uint256 _noOfClaimers
+        uint256 _noOfClaimers,
+        uint256 _totalOutputTokens
     ) {
         merkleRoot = _merkleRoot;
 
@@ -56,6 +58,7 @@ contract SonikDrop {
 
         isTimeLocked = _claimTime != 0;
         airdropEndTime = block.timestamp + _claimTime;
+        totalOutputTokens = _totalOutputTokens;
     }
     // @dev prevents zero address from interacting with the contract
 
@@ -192,9 +195,11 @@ contract SonikDrop {
     function fundAirdrop(uint256 _amount) external {
         onlyOwner();
         zeroValueCheck(_amount);
+
         if (!IERC20(tokenAddress).transferFrom(msg.sender, address(this), _amount)) {
             revert Errors.TransferFailed();
         }
+        totalOutputTokens = totalOutputTokens + _amount;
         emit Events.AirdropTokenDeposited(msg.sender, _amount);
     }
 
