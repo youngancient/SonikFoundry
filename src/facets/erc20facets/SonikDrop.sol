@@ -2,37 +2,60 @@
 pragma solidity 0.8.27;
 
 import {MerkleProof} from "../../libraries/MerkleProof.sol";
-import {IERC20} from "../../interfaces/IERC20.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IERC721} from "../../interfaces/IERC721.sol";
 import {Errors, Events} from "../../libraries/Utils.sol";
-import {LibDiamond} from "../../libraries/LibDiamond.sol";
 import {ECDSA} from "../../libraries/ECDSA.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
-// another possible feature is time-locking the airdrop
-// i.e people can only claim within a certain time
-// owners cannot withdraw tokens within that time
-
-// TODO add a way to check if the airdrop has ended and owner wthdraw
+/// @title SonikDrop
+/// @notice A contract for managing token airdrops with optional NFT requirements and time locks
+/// @dev Implements merkle proof verification and signature validation for claims
 contract SonikDrop {
+    using SafeERC20 for IERC20;
+
+    /// @notice The merkle root used for validating claims
+
     bytes32 public immutable merkleRoot;
+    /// @notice Name of the airdrop
     string public name;
+    /// @notice Address of the contract owner
     address public immutable owner;
+    /// @notice Address of the token being airdropped
     address public immutable tokenAddress;
+    /// @notice Address of the required NFT contract (if any)
     address nftAddress;
 
+    /// @notice Whether the airdrop has a time lock
     bool public isTimeLocked;
+    /// @notice Whether the owner has withdrawn remaining tokens
     bool public hasOwnerWithdrawn;
+    /// @notice Whether NFT ownership is required to claim
     bool isNftRequired;
+    /// @notice Timestamp when the airdrop ends
     uint256 public airdropEndTime;
 
+    /// @notice Total number of eligible claimers
     uint256 internal totalNoOfClaimers;
+    /// @notice Total number of successful claims
     uint256 internal totalNoOfClaimed;
+    /// @notice Total amount of tokens allocated for the airdrop
     uint256 public totalOutputTokens;
+    /// @notice Total amount of tokens distributed
+    uint256 internal totalAmountSpent;
 
-    uint256 internal totalAmountSpent; // total for airdrop token spent
-
+    /// @notice Mapping to track if a user has claimed their airdrop
     mapping(address user => bool claimed) public hasUserClaimedAirdrop;
 
+    /// @notice Constructor to initialize the airdrop contract
+    /// @param _owner Address of the contract owner
+    /// @param _tokenAddress Address of the token being airdropped
+    /// @param _merkleRoot Merkle root for validating claims
+    /// @param _name Name of the airdrop
+    /// @param _nftAddress Address of required NFT contract (if any)
+    /// @param _claimTime Duration of the claim period
+    /// @param _noOfClaimers Maximum number of eligible claimers
+    /// @param _totalOutputTokens Total tokens allocated for airdrop
     constructor(
         address _owner,
         address _tokenAddress,
@@ -44,85 +67,95 @@ contract SonikDrop {
         uint256 _totalOutputTokens
     ) {
         merkleRoot = _merkleRoot;
-
         owner = _owner;
 
         tokenAddress = _tokenAddress;
         name = _name;
-
         nftAddress = _nftAddress;
 
         isNftRequired = _nftAddress != address(0);
-
         totalNoOfClaimers = _noOfClaimers;
-
         isTimeLocked = _claimTime != 0;
         airdropEndTime = block.timestamp + _claimTime;
         totalOutputTokens = _totalOutputTokens;
     }
-    // @dev prevents zero address from interacting with the contract
 
-    function sanityCheck(address _user) private pure {
-        if (_user == address(0)) {
+    /// @notice Validates that the provided address is not zero
+    /// @param _address Address to validate
+    function sanityCheck(address _address) private pure {
+        if (_address == address(0)) {
             revert Errors.ZeroAddressDetected();
         }
     }
 
+    /// @notice Validates that the provided amount is greater than zero
+    /// @param _amount Amount to validate
     function zeroValueCheck(uint256 _amount) private pure {
         if (_amount <= 0) {
             revert Errors.ZeroValueDetected();
         }
     }
 
-    // @dev prevents users from accessing onlyOwner privileges
+    /// @notice Restricts function access to contract owner
     function onlyOwner() private view {
         require(msg.sender == owner, Errors.UnAuthorizedFunctionCall());
     }
 
-    // @dev returns if airdropTime has ended or not for time locked airdrop
+    /// @notice Checks if the airdrop claiming period has ended
+    /// @return bool True if airdrop period has ended
     function hasAirdropTimeEnded() public view returns (bool) {
         return block.timestamp > airdropEndTime;
     }
 
-    // @dev checks contract token balance
+    /// @notice Gets the current token balance of the contract
+    /// @return uint256 Current contract balance
     function getContractBalance() public view returns (uint256) {
         return IERC20(tokenAddress).balanceOf(address(this));
     }
 
-    // @user check for eligibility
-
+    /// @notice Checks if a user is eligible to claim tokens
+    /// @param _amount Amount of tokens to claim
+    /// @param _merkleProof Merkle proof for validation
+    /// @return bool True if user is eligible
     function checkEligibility(uint256 _amount, bytes32[] calldata _merkleProof) public view returns (bool) {
         if (hasUserClaimedAirdrop[msg.sender]) {
             return false;
         }
 
-        // @dev we hash the encoded byte form of the user address and amount to create a leaf
         bytes32 leaf = keccak256(bytes.concat(keccak256(abi.encode(msg.sender, _amount))));
 
-        // @dev check if the merkleProof provided is valid or belongs to the merkleRoot
         return MerkleProof.verify(_merkleProof, merkleRoot, leaf);
     }
 
-    // verify user signature
-
+    /// @notice Verifies user signature
+    /// @param digest Message hash to verify
+    /// @param signature Signature to verify
+    /// @return bool True if signature is valid
     function _verifySignature(bytes32 digest, bytes memory signature) private view returns (bool) {
         return ECDSA.recover(digest, signature) == msg.sender;
     }
 
-    // require msg.sender to sign a message before claiming
-    // @user for claiming airdrop
+    /// @notice Allows users to claim their airdrop
+    /// @param _amount Amount of tokens to claim
+    /// @param _merkleProof Proof of eligibility
+    /// @param digest Message hash for signature verification
+    /// @param signature User's signature
     function claimAirdrop(uint256 _amount, bytes32[] calldata _merkleProof, bytes32 digest, bytes memory signature)
         external
     {
-        // check if NFT is required
         if (isNftRequired) {
             claimAirdrop(_amount, _merkleProof, type(uint256).max, digest, signature);
             return;
         }
         _claimAirdrop(_amount, _merkleProof, digest, signature);
     }
+    /// @notice Allows users to claim airdrop with NFT requirement
+    /// @param _amount Amount of tokens to claim
+    /// @param _merkleProof Proof of eligibility
+    /// @param _tokenId NFT token ID (unused)
+    /// @param digest Message hash for signature verification
+    /// @param signature User's signature
 
-    // @user for claiming airdrop with compulsory NFT ownership
     function claimAirdrop(
         uint256 _amount,
         bytes32[] calldata _merkleProof,
@@ -132,12 +165,15 @@ contract SonikDrop {
     ) public {
         require(_tokenId == type(uint256).max, Errors.InvalidTokenId());
 
-        // @dev checks if user has the required NFT
         require(IERC721(nftAddress).balanceOf(msg.sender) > 0, Errors.NFTNotFound());
-
         _claimAirdrop(_amount, _merkleProof, digest, signature);
     }
 
+    /// @notice Internal function to process airdrop claims
+    /// @param _amount Amount of tokens to claim
+    /// @param _merkleProof Proof of eligibility
+    /// @param digest Message hash for signature verification
+    /// @param signature User's signature
     function _claimAirdrop(uint256 _amount, bytes32[] calldata _merkleProof, bytes32 digest, bytes memory signature)
         internal
     {
@@ -146,11 +182,8 @@ contract SonikDrop {
 
         // checks if User is eligible
         require(checkEligibility(_amount, _merkleProof), Errors.InvalidClaim());
-
         require(!isTimeLocked || !hasAirdropTimeEnded(), Errors.AirdropClaimEnded());
-
         uint256 _currentNoOfClaims = totalNoOfClaimed;
-
         require(_currentNoOfClaims + 1 <= totalNoOfClaimers, Errors.TotalClaimersExceeded());
         require(getContractBalance() >= _amount, Errors.InsufficientContractBalance());
 
@@ -159,19 +192,13 @@ contract SonikDrop {
         }
 
         hasUserClaimedAirdrop[msg.sender] = true;
-
         totalAmountSpent = totalAmountSpent + _amount;
-
-        require(IERC20(tokenAddress).transfer(msg.sender, _amount), Errors.TransferFailed());
-
+        IERC20(tokenAddress).safeTransfer(msg.sender, _amount);
         emit Events.AirdropClaimed(msg.sender, _amount);
     }
 
-    // @user For owner to withdraw left over tokens
-
-    /* @dev the withdrawal is only possible if the amount of tokens left in the contract
-        is less than the total amount of tokens claimed by the users
-    */
+    /// @notice Allows owner to withdraw remaining tokens
+    ///@dev the withdrawal is only possible if the amount of tokens left in the contract is less than the total amount of tokens claimed by the users
     function withdrawLeftOverToken() external {
         onlyOwner();
         uint256 contractBalance = getContractBalance();
@@ -184,25 +211,25 @@ contract SonikDrop {
         }
         hasOwnerWithdrawn = true;
 
-        if (!IERC20(tokenAddress).transfer(owner, contractBalance)) {
-            revert Errors.WithdrawalFailed();
-        }
+        IERC20(tokenAddress).safeTransfer(owner, contractBalance);
 
         emit Events.WithdrawalSuccessful(msg.sender, contractBalance);
     }
 
-    // @user for owner to fund the airdrop
+    /// @notice Allows owner to fund the airdrop
+    /// @param _amount Amount of tokens to add to airdrop
     function fundAirdrop(uint256 _amount) external {
         onlyOwner();
         zeroValueCheck(_amount);
 
-        if (!IERC20(tokenAddress).transferFrom(msg.sender, address(this), _amount)) {
-            revert Errors.TransferFailed();
-        }
+        IERC20(tokenAddress).safeTransferFrom(msg.sender, address(this), _amount);
+
         totalOutputTokens = totalOutputTokens + _amount;
         emit Events.AirdropTokenDeposited(msg.sender, _amount);
     }
 
+    /// @notice Updates NFT requirement address
+    /// @param _newNft Address of new NFT contract
     function updateNftRequirement(address _newNft) external {
         sanityCheck(_newNft);
         onlyOwner();
@@ -217,20 +244,19 @@ contract SonikDrop {
         emit Events.NftRequirementUpdated(msg.sender, block.timestamp, _newNft);
     }
 
+    /// @notice Toggles NFT requirement on/off
     function turnOffNftRequirement() external {
         onlyOwner();
-
         isNftRequired = !isNftRequired;
-
         emit Events.NftRequirementToggled(msg.sender, block.timestamp);
     }
 
+    /// @notice Updates the claim period duration
+    /// @param _claimTime New duration for claim period
     function updateClaimTime(uint256 _claimTime) external {
         onlyOwner();
-
         isTimeLocked = _claimTime != 0;
         airdropEndTime = block.timestamp + _claimTime;
-
         emit Events.ClaimTimeUpdated(msg.sender, _claimTime, airdropEndTime);
     }
 }

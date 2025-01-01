@@ -10,6 +10,11 @@ import {Strings} from "../../libraries/utils/Strings.sol";
 import {ERC721URIStorage} from "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
+/// @title SonikPoapFacet
+/// @author Sonik
+/// @notice This contract implements a NFT DROP with merkle proof verification
+/// @dev Extends ERC721URIStorage for NFT functionality with metadata support
+
 contract SonikPoapFacet is ERC721URIStorage {
     using Strings for uint256;
     /*====================    Variable  ====================*/
@@ -29,6 +34,15 @@ contract SonikPoapFacet is ERC721URIStorage {
 
     mapping(address => bool) hasUserClaimedAirdrop;
 
+    /// @notice Initializes the POAP contract with required parameters
+    /// @param _name Name of the POAP token
+    /// @param _symbol Symbol of the POAP token
+    /// @param _baseURI Base URI for token metadata
+    /// @param _owner Address of the contract owner
+    /// @param _merkleRoot Merkle root for eligibility verification
+    /// @param _nftAddress Address of required NFT for claiming (if any)
+    /// @param _claimTime Duration for which claims are allowed
+    /// @param _noOfClaimers Maximum number of allowed claims
     constructor(
         string memory _name,
         string memory _symbol,
@@ -53,40 +67,46 @@ contract SonikPoapFacet is ERC721URIStorage {
         airdropEndTime = block.timestamp + _claimTime;
     }
 
+    /// @notice Validates that the provided address is not zero
+    /// @param _user Address to validate
     function sanityCheck(address _user) internal pure {
         if (_user == address(0)) {
             revert Errors.ZeroAddressDetected();
         }
     }
 
-    // @dev prevents users from accessing onlyOwner priv ileges
+    /// @notice Ensures caller is the contract owner
+    /// @dev Reverts if caller is not the owner
     function onlyOwner() internal view {
         if (msg.sender != owner) {
             revert Errors.UnAuthorizedFunctionCall();
         }
     }
-    /*====================  VIew FUnctions ====================*/
 
-    // @dev returns if airdropTime has ended or not
+    /// @notice Checks if the airdrop claiming period has ended
+    /// @return bool True if airdrop time has ended, false otherwise
     function hasAirdropTimeEnded() public view returns (bool) {
         return block.timestamp > airdropEndTime;
     }
 
+    /// @notice Verifies if caller is eligible for claiming the airdrop
+    /// @param _merkleProof Merkle proof to verify eligibility
+    /// @return bool True if caller is eligible, false otherwise
     function checkEligibility(bytes32[] calldata _merkleProof) public view returns (bool) {
         if (hasUserClaimedAirdrop[msg.sender]) {
             return false;
         }
-        // @dev we hash the encoded byte form of the user address and amount to create a leaf
+
         bytes32 leaf = keccak256(bytes.concat(keccak256(abi.encode(msg.sender))));
 
-        // @dev check if the merkleProof provided is valid or belongs to the merkleRoot
         return MerkleProof.verify(_merkleProof, merkleRoot, leaf);
     }
-    // require msg.sender to sign a message before claiming
-    // @user for claiming airdrop
 
+    /// @notice Claims airdrop for eligible users
+    /// @param _merkleProof Merkle proof for eligibility verification
+    /// @param digest Message digest for signature verification
+    /// @param signature User's signature
     function claimAirdrop(bytes32[] calldata _merkleProof, bytes32 digest, bytes memory signature) external {
-        // check if NFT is requiredss
         if (isNftRequired) {
             claimAirdrop(_merkleProof, type(uint256).max, digest, signature);
             return;
@@ -94,23 +114,28 @@ contract SonikPoapFacet is ERC721URIStorage {
         _claimAirdrop(_merkleProof, digest, signature);
     }
 
-    // @user for claiming airdrop with compulsory NFT ownership
+    /// @notice Claims airdrop for users who must own an NFT
+    /// @param _merkleProof Merkle proof for eligibility verification
+    /// @param _tokenId Token ID of the required NFT
+    /// @param digest Message digest for signature verification
+    /// @param signature User's signature
     function claimAirdrop(bytes32[] calldata _merkleProof, uint256 _tokenId, bytes32 digest, bytes memory signature)
         public
     {
         require(_tokenId == type(uint256).max, Errors.InvalidTokenId());
 
-        // @dev checks if user has the required NFT
         require(IERC721(nftAddress).balanceOf(msg.sender) > 0, Errors.NFTNotFound());
 
         _claimAirdrop(_merkleProof, digest, signature);
     }
 
+    /// @notice Internal function to process airdrop claims
+    /// @param _merkleProof Merkle proof for eligibility verification
+    /// @param digest Message digest for signature verification
+    /// @param signature User's signature
     function _claimAirdrop(bytes32[] calldata _merkleProof, bytes32 digest, bytes memory signature) internal {
-        // verify user signature
         require(_verifySignature(digest, signature), Errors.InvalidSignature());
 
-        //    checks if User is eligible
         require(checkEligibility(_merkleProof), Errors.InvalidClaim());
 
         require(!isTimeLocked || !hasAirdropTimeEnded(), Errors.AirdropClaimEnded());
@@ -130,8 +155,8 @@ contract SonikPoapFacet is ERC721URIStorage {
         emit Events.AirdropClaimed(msg.sender, tokenId);
     }
 
-    /*====================  OWNER FUnctions ====================*/
-
+    /// @notice Updates the NFT requirement for claiming
+    /// @param _newNft Address of the new required NFT
     function updateNftRequirement(address _newNft) external {
         sanityCheck(_newNft);
         onlyOwner();
@@ -146,6 +171,7 @@ contract SonikPoapFacet is ERC721URIStorage {
         emit Events.NftRequirementUpdated(msg.sender, block.timestamp, _newNft);
     }
 
+    /// @notice Toggles the NFT requirement for claiming
     function toggleNftRequirement() external {
         onlyOwner();
 
@@ -154,6 +180,8 @@ contract SonikPoapFacet is ERC721URIStorage {
         emit Events.NftRequirementToggled(msg.sender, block.timestamp);
     }
 
+    /// @notice Updates the claim time period
+    /// @param _claimTime New duration for claiming period
     function updateClaimTime(uint256 _claimTime) external {
         onlyOwner();
 
@@ -163,25 +191,25 @@ contract SonikPoapFacet is ERC721URIStorage {
         emit Events.ClaimTimeUpdated(msg.sender, _claimTime, airdropEndTime);
     }
 
-    /*====================  private functions ====================*/
-    function zeroValueCheck(uint256 _amount) private pure {
-        if (_amount <= 0) {
-            revert Errors.ZeroValueDetected();
-        }
-    }
-
-    // verify user signature
+    /// @notice Verifies if a signature is valid
+    /// @param digest Message digest to verify
+    /// @param signature Signature to verify
+    /// @return bool True if signature is valid, false otherwise
     function _verifySignature(bytes32 digest, bytes memory signature) private view returns (bool) {
         return ECDSA.recover(digest, signature) == msg.sender;
     }
 
-    // The following functions are overrides required by Solidity.
-
+    /// @notice Returns the token URI for a given token ID
+    /// @param tokenId ID of the token
+    /// @return string URI of the token metadata
     function tokenURI(uint256 tokenId) public view override(ERC721URIStorage) returns (string memory) {
         _requireOwned(tokenId);
         return string(string.concat(baseURI, "/", tokenId.toString()));
     }
 
+    /// @notice Checks if contract supports an interface
+    /// @param interfaceId Interface identifier to check
+    /// @return bool True if interface is supported, false otherwise
     function supportsInterface(bytes4 interfaceId) public view override(ERC721URIStorage) returns (bool) {
         return super.supportsInterface(interfaceId);
     }
