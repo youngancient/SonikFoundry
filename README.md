@@ -3,7 +3,7 @@
 ### Networks
 - **Lisk Sepolia**
 - **Base Sepolia**
-- **Kaiaos**
+- **Kaia (Kaia Testnet / Kairos)**
 - **Normal Sepolia**
 
 ### Contracts
