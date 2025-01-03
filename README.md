@@ -6,7 +6,7 @@
 - **Kaia (Kaia Testnet / Kairos)**
 - **Normal Sepolia**
 
-### Contracts
+### Verified Contracts
 - **AirdropFactoryFacet**  
   Deployed at: `0x49008FabEE709e9944684ABA7Ae2b60a1ae3e7B2`
 
@@ -39,4 +39,6 @@
 | Kaia     | 1,449,429               | 0.000000027 gwei     | 0.000000039136583         | $0.000156546          | 127,666                    | 0.000000003447               | $0.000013788             |
 
 
+## License
 
+This package is licensed under the MIT License. See the [LICENSE](./LICENSE.md) file for more information.
