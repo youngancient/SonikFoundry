@@ -7,9 +7,9 @@
 
 ### Verified Contracts
 - **AirdropFactoryFacet**  
-  Deployed at: `0x49008FabEE709e9944684ABA7Ae2b60a1ae3e7B2`
+  Deployed at: `0x01b634a4b03b6091a38d687c8feea74d82c3e5e7`
 - **PoapFactoryFacet**  
-  Deployed at: `0x33653F59197dE3AbDA75941278911A469608B20f`
+  Deployed at: `0x4c12a7ff42f3211e4013a95fd6fe980b7debf52e`
 
 ### Assumptions
 - Ethereum price is assumed to be $4000.
