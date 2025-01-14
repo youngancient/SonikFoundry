@@ -20,6 +20,7 @@ contract SonikPoapFacet is ERC721URIStorage {
     /*====================    Variable  ====================*/
 
     bytes32 public immutable merkleRoot;
+     uint256 public immutable creationTime;
     bool public isNftRequired;
     bool public isTimeLocked;
 
@@ -30,6 +31,7 @@ contract SonikPoapFacet is ERC721URIStorage {
     uint256 public totalNoOfClaimers;
     uint256 totalNoOfClaimed;
     uint256 index;
+   
     string internal baseURI;
 
     mapping(address => bool) hasUserClaimedAirdrop;
@@ -58,12 +60,17 @@ contract SonikPoapFacet is ERC721URIStorage {
         baseURI = _baseURI;
         owner = _owner;
 
+        creationTime = block.timestamp;
         nftAddress = _nftAddress;
         isNftRequired = _nftAddress != address(0);
 
         totalNoOfClaimers = _noOfClaimers;
 
         isTimeLocked = _claimTime != 0;
+
+        if (_claimTime == 0){
+        airdropEndTime = 0;
+        }
         airdropEndTime = block.timestamp + _claimTime;
     }
 
@@ -86,6 +93,9 @@ contract SonikPoapFacet is ERC721URIStorage {
     /// @notice Checks if the airdrop claiming period has ended
     /// @return bool True if airdrop time has ended, false otherwise
     function hasAirdropTimeEnded() public view returns (bool) {
+        if (!isTimeLocked) {
+            return false;
+        }
         return block.timestamp > airdropEndTime;
     }
 
@@ -186,6 +196,9 @@ contract SonikPoapFacet is ERC721URIStorage {
         onlyOwner();
 
         isTimeLocked = _claimTime != 0;
+         if (_claimTime == 0) {
+            airdropEndTime = 0;
+        }
         airdropEndTime = block.timestamp + _claimTime;
 
         emit Events.ClaimTimeUpdated(msg.sender, _claimTime, airdropEndTime);

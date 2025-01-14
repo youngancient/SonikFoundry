@@ -17,6 +17,8 @@ contract SonikDrop {
     /// @notice The merkle root used for validating claims
 
     bytes32 public immutable merkleRoot;
+    /// @notice Sonik drop creation time 
+     uint256 public immutable creationTime;
     /// @notice Name of the airdrop
     string public name;
     /// @notice Address of the contract owner
@@ -68,6 +70,7 @@ contract SonikDrop {
     ) {
         merkleRoot = _merkleRoot;
         owner = _owner;
+         creationTime = block.timestamp;
 
         tokenAddress = _tokenAddress;
         name = _name;
@@ -76,6 +79,9 @@ contract SonikDrop {
         isNftRequired = _nftAddress != address(0);
         totalNoOfClaimers = _noOfClaimers;
         isTimeLocked = _claimTime != 0;
+         if (_claimTime == 0){
+        airdropEndTime = 0;
+        }
         airdropEndTime = block.timestamp + _claimTime;
         totalOutputTokens = _totalOutputTokens;
     }
@@ -103,7 +109,10 @@ contract SonikDrop {
 
     /// @notice Checks if the airdrop claiming period has ended
     /// @return bool True if airdrop period has ended
-    function hasAirdropTimeEnded() public view returns (bool) {
+     function hasAirdropTimeEnded() public view returns (bool) {
+        if (!isTimeLocked) {
+            return false;
+        }
         return block.timestamp > airdropEndTime;
     }
 
@@ -256,6 +265,9 @@ contract SonikDrop {
     function updateClaimTime(uint256 _claimTime) external {
         onlyOwner();
         isTimeLocked = _claimTime != 0;
+        if (_claimTime == 0) {
+            airdropEndTime = 0;
+        }
         airdropEndTime = block.timestamp + _claimTime;
         emit Events.ClaimTimeUpdated(msg.sender, _claimTime, airdropEndTime);
     }
