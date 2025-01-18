@@ -6,6 +6,13 @@ require("dotenv").config();
 module.exports = {
   solidity: "0.8.27",
 
+  paths: {
+    sources: "./src",
+    tests: "./test",
+    cache: "./cache",
+    artifacts: "./artifacts",
+  },
+
   networks: {
     sonicTestnet: {
       url: "https://rpc.blaze.soniclabs.com",
@@ -18,8 +25,8 @@ module.exports = {
       accounts: [process.env.private_key], 
     },
     basesepolia: {
-      url: process.env.BASE_RPC_URL,
-      chainId: 11155111, 
+      url: process.env.BASE_SEPOLIA_RPC_URL,
+      chainId: 84532, 
       accounts: [process.env.private_key], 
       gasPrice: 1000000000,
     },
@@ -39,12 +46,11 @@ module.exports = {
     apiKey: {
       basesepolia: process.env.BASESCAN_API_KEY,
       kairos: "unnecessary", 
-      sonicTestnet: "YOUR_SONICSCAN_TESTNET_API_KEY",
-      sepolia: process.env.SEPOLIA_API_KEY,
+      sonicTestnet: process.env.SONICBLAST_API_KEY,
+      sepolia: process.env.ETHERSCAN_API_KEY,
       lisksepolia: process.env.LISK_API_KEY,
     },
     customChains: [
-      
       {
         network: "sonicTestnet",
         chainId: 57054,
@@ -52,6 +58,15 @@ module.exports = {
           apiURL: "https://api-testnet.sonicscan.org/api",
           browserURL: "https://testnet.sonicscan.org",
         },
+      },
+      {
+        
+       network: "basesepolia",
+       chainId: 84532,
+       urls: {
+        apiURL: "https://api-sepolia.basescan.org/api",
+        browserURL: "https://sepolia.basescan.org"
+       }
       },
       {
         network: "kairos",
