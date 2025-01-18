@@ -24,6 +24,11 @@ module.exports = {
       chainId: 1001,
       accounts: [process.env.private_key], 
     },
+    electroneumTestnet: {
+      url: "https://testnet-rpc.electroneum.com",
+      chainId: 5201420,
+      accounts: [process.env.private_key], 
+    },
     basesepolia: {
       url: process.env.BASE_SEPOLIA_RPC_URL,
       chainId: 84532, 
@@ -90,6 +95,13 @@ module.exports = {
          urls: {
               apiURL: "https://sepolia-blockscout.lisk.com/api",
               browserURL: "https://sepolia-blockscout.lisk.com"
+          }
+      },{
+        network: "electroneumTestnet",
+        chainId: 5201420, 
+         urls: {
+              apiURL: "https://blockexplorer.thesecurityteam.rocks/api",
+              browserURL: "https://blockexplorer.thesecurityteam.rocks/"
           }
       },
     ],

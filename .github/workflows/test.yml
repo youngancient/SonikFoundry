@@ -41,6 +41,18 @@ jobs:
           forge build --sizes
         id: build
 
+      - name: Initialize Hardhat
+        run: |
+          npm init -y
+          npm i --save-dev hardhat
+          npx hardhat init --force
+          npm i --save-dev @nomicfoundation/hardhat-foundry @nomicfoundation/hardhat-toolbox
+
+      - name: Run Hardhat tests
+        run: |
+          npx hardhat test
+        id: hardhat-test
+
       # - name: Run Forge tests
       #   run: |
       #     forge test -vvv

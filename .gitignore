@@ -7,3 +7,4 @@ broadcast
 .vscode
 package-lock.json
 cache_hardhat
+ignition/deployments
