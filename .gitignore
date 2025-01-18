@@ -6,3 +6,4 @@ broadcast
 .env
 .vscode
 package-lock.json
+cache_hardhat
