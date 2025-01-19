@@ -3,13 +3,25 @@
 - **Lisk Sepolia**
 - **Base Sepolia**
 - **Kaia (Kaia Testnet / Kairos)**
-- **Normal Sepolia**
+- **ETH Sepolia**
+- **Sonic Blaze Testnet**
+- 
 
 ### Verified Contracts
 - **AirdropFactoryFacet**  
-  Deployed at: `0x01b634a4b03b6091a38d687c8feea74d82c3e5e7`
+  Deployed at: `0x60C0f4B77A638967Dd8Ea2bDdB024168639D1049`
 - **PoapFactoryFacet**  
-  Deployed at: `0x4c12a7ff42f3211e4013a95fd6fe980b7debf52e`
+  Deployed at: `0x6C57B5A93e5f05fB0c4Ecc70494Bc3dB8cE4ac84`
+
+### Verified Contracts for kairos
+>> createX is not avaliable on kairos
+- **AirdropFactoryFacet**  
+  Deployed at: `0xC0fb1654128283e503B60bcCEaC3df015f060C34`
+- **PoapFactoryFacet**  
+  Deployed at: `0x120C1119aa70Eb957a5FF136E2e6c1810A90Bd22`
+
+
+
 
 ### Assumptions
 - Ethereum price is assumed to be $4000.
