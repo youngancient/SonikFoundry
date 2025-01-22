@@ -5,6 +5,7 @@
 - **Kaia (Kaia Testnet / Kairos)**
 - **ETH Sepolia**
 - **Sonic Blaze Testnet**
+- **Electroneum Testnet**
 - 
 
 ### Verified Contracts
@@ -19,6 +20,14 @@
   Deployed at: `0xC0fb1654128283e503B60bcCEaC3df015f060C34`
 - **PoapFactoryFacet**  
   Deployed at: `0x120C1119aa70Eb957a5FF136E2e6c1810A90Bd22`
+
+### Verified Contracts for Electroneum Testnet
+>> createX is not avaliable on Electroneum Testnet
+- **AirdropFactoryFacet**  
+  Deployed at: `0x6E269Ee68bB6B29C5ba9e7c9c72ec5626421Ce0E`
+- **PoapFactoryFacet**  
+  Deployed at: `0x0C6883a9dCC4927Fc293470728FAa6665637E16b`
+
 
 
 

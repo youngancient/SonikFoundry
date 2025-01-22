@@ -25,7 +25,7 @@ module.exports = {
       accounts: [process.env.private_key], 
     },
     electroneumTestnet: {
-      url: "https://testnet-rpc.electroneum.com",
+      url: process.env.electroneum_testnet_RPC_URL2,
       chainId: 5201420,
       accounts: [process.env.private_key], 
     },
@@ -54,6 +54,7 @@ module.exports = {
       sonicTestnet: process.env.SONICBLAST_API_KEY,
       sepolia: process.env.ETHERSCAN_API_KEY,
       lisksepolia: process.env.LISK_API_KEY,
+      electroneumTestnet: process.env.LISK_API_KEY,
     },
     customChains: [
       {
