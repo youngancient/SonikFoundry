@@ -33,6 +33,7 @@ library Events {
     event MerkleRootUpdated(bytes32 indexed _oldMerkleRoot, bytes32 indexed _newMerkleRoot);
     event OwnershipTransferred(address indexed _oldOwner, uint256 indexed _timestamp, address indexed _newOwner);
     event AirdropTokenDeposited(address indexed _owner, uint256 indexed _amount);
+    event AirdropNativeCoinDeposited(address indexed _owner, uint256 indexed _amount);
     event NftRequirementToggled(address indexed _owner, uint256 indexed _timestamp);
 
     event NftRequirementUpdated(address indexed _owner, uint256 indexed _timestamp, address indexed _newNft);
