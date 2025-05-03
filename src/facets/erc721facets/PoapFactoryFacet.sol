@@ -28,7 +28,8 @@ contract PoapFactoryFacet {
         bytes32 _merkleRoot,
         address _nftAddress,
         uint256 _claimTime,
-        uint256 _noOfClaimers
+        uint256 _noOfClaimers,
+        bool _isCollection
     ) private {
         if (msg.sender == address(0)) {
             revert Errors.ZeroAddressDetected();
@@ -38,7 +39,7 @@ contract PoapFactoryFacet {
         }
 
         SonikPoapFacet _newSonikPoap = new SonikPoapFacet(
-            _name, _symbol, _baseURI, msg.sender, _merkleRoot, _nftAddress, _claimTime, _noOfClaimers
+            _name, _symbol, _baseURI, msg.sender, _merkleRoot, _nftAddress, _claimTime, _noOfClaimers, _isCollection
         );
 
         ownerToSonikPoapCloneContracts[msg.sender].push(address(_newSonikPoap));
@@ -65,7 +66,30 @@ contract PoapFactoryFacet {
         uint256 _claimTime,
         uint256 _noOfClaimers
     ) external {
-        return _createSonikPoap(_name, _symbol, _baseURI, _merkleRoot, _nftAddress, _claimTime, _noOfClaimers);
+        return _createSonikPoap(_name, _symbol, _baseURI, _merkleRoot, _nftAddress, _claimTime, _noOfClaimers, false);
+    }
+    /// @notice Creates a POAP with NFT requirement and time lock and Collection (this is configurable)
+    /// @param _name Name of the POAP token
+    /// @param _symbol Symbol of the POAP token
+    /// @param _baseURI Base URI for token metadata
+    /// @param _merkleRoot Merkle root for whitelist verification
+    /// @param _nftAddress Address of required NFT for claiming
+    /// @param _claimTime Timestamp when claiming becomes available
+    /// @param _noOfClaimers Maximum number of allowed claimers
+
+    function createSonikPoap(
+        string memory _name,
+        string memory _symbol,
+        string memory _baseURI,
+        bytes32 _merkleRoot,
+        address _nftAddress,
+        uint256 _claimTime,
+        uint256 _noOfClaimers,
+        bool _isCollection
+    ) external {
+        return _createSonikPoap(
+            _name, _symbol, _baseURI, _merkleRoot, _nftAddress, _claimTime, _noOfClaimers, _isCollection
+        );
     }
     /// @notice Creates a POAP with NFT requirement but no time lock
     /// @param _name Name of the POAP token
@@ -83,7 +107,7 @@ contract PoapFactoryFacet {
         address _nftAddress,
         uint256 _noOfClaimers
     ) external {
-        return _createSonikPoap(_name, _symbol, _baseURI, _merkleRoot, _nftAddress, 0, _noOfClaimers);
+        return _createSonikPoap(_name, _symbol, _baseURI, _merkleRoot, _nftAddress, 0, _noOfClaimers, false);
     }
 
     /// @notice Creates a basic POAP without NFT requirement or time lock
@@ -99,7 +123,7 @@ contract PoapFactoryFacet {
         bytes32 _merkleRoot,
         uint256 _noOfClaimers
     ) external {
-        return _createSonikPoap(_name, _symbol, _baseURI, _merkleRoot, address(0), 0, _noOfClaimers);
+        return _createSonikPoap(_name, _symbol, _baseURI, _merkleRoot, address(0), 0, _noOfClaimers, false);
     }
     /// @notice Retrieves all POAPs created by a specific owner
     /// @param _owner Address of the POAP creator
