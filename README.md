@@ -13,6 +13,11 @@
   Deployed at: `0x60C0f4B77A638967Dd8Ea2bDdB024168639D1049`
 - **PoapFactoryFacet**  
   Deployed at: `0x6C57B5A93e5f05fB0c4Ecc70494Bc3dB8cE4ac84`
+### Verified Contracts for sonic Blaze
+- **AirdropFactoryFacet**  
+  Deployed at: `0x27237eb0616f1aA6Cf6D44f6796e41300D64d81b`
+- **PoapFactoryFacet**  
+  Deployed at: `0x9a4346DdA58198D663F94c9Bd3eD95374336EAb2`
 
 ### Verified Contracts for kairos
 >> createX is not avaliable on kairos

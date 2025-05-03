@@ -38,9 +38,6 @@ contract AirdropFactoryFacet {
         uint256 _noOfClaimers,
         uint256 _totalOutputTokens
     ) private returns (address) {
-        if (msg.sender == address(0)) {
-            revert Errors.ZeroAddressDetected();
-        }
         if (_noOfClaimers <= 0) {
             revert Errors.ZeroValueDetected();
         }

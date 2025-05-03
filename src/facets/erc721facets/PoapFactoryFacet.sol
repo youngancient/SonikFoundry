@@ -31,9 +31,6 @@ contract PoapFactoryFacet {
         uint256 _noOfClaimers,
         bool _isCollection
     ) private {
-        if (msg.sender == address(0)) {
-            revert Errors.ZeroAddressDetected();
-        }
         if (_noOfClaimers <= 0) {
             revert Errors.ZeroValueDetected();
         }
