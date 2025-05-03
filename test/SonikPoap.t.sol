@@ -29,7 +29,8 @@ contract SonikPoapFacetTest is GetProof {
 
     function setUp() public {
         owner = msg.sender;
-        sonikPoapFacet = new SonikPoapFacet("TESTNFT", "TNFT", baseURI, msg.sender, merkleRoot, address(0), 0, 10);
+        sonikPoapFacet =
+            new SonikPoapFacet("TESTNFT", "TNFT", baseURI, msg.sender, merkleRoot, address(0), 0, 10, false);
         testERC721 = new TestERC721();
         (user1, keyUser1) = makeAddrAndKey("user1");
         (user2, keyUser2) = makeAddrAndKey("user2");

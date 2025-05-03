@@ -20,9 +20,10 @@ contract SonikPoapFacet is ERC721URIStorage {
     /*====================    Variable  ====================*/
 
     bytes32 public immutable merkleRoot;
-     uint256 public immutable creationTime;
+    uint256 public immutable creationTime;
     bool public isNftRequired;
     bool public isTimeLocked;
+    bool public isCollection;
 
     address internal nftAddress;
     address internal immutable owner;
@@ -31,7 +32,7 @@ contract SonikPoapFacet is ERC721URIStorage {
     uint256 public totalNoOfClaimers;
     uint256 totalNoOfClaimed;
     uint256 index;
-   
+
     string internal baseURI;
 
     mapping(address => bool) hasUserClaimedAirdrop;
@@ -53,12 +54,12 @@ contract SonikPoapFacet is ERC721URIStorage {
         bytes32 _merkleRoot,
         address _nftAddress,
         uint256 _claimTime,
-        uint256 _noOfClaimers
+        uint256 _noOfClaimers,
+        bool _isCollection
     ) ERC721(_name, _symbol) {
         owner = _owner;
         merkleRoot = _merkleRoot;
         baseURI = _baseURI;
-        owner = _owner;
 
         creationTime = block.timestamp;
         nftAddress = _nftAddress;
@@ -68,10 +69,11 @@ contract SonikPoapFacet is ERC721URIStorage {
 
         isTimeLocked = _claimTime != 0;
 
-        if (_claimTime == 0){
-        airdropEndTime = 0;
+        if (_claimTime == 0) {
+            airdropEndTime = 0;
         }
         airdropEndTime = block.timestamp + _claimTime;
+        isCollection = _isCollection;
     }
 
     /// @notice Validates that the provided address is not zero
@@ -196,7 +198,7 @@ contract SonikPoapFacet is ERC721URIStorage {
         onlyOwner();
 
         isTimeLocked = _claimTime != 0;
-         if (_claimTime == 0) {
+        if (_claimTime == 0) {
             airdropEndTime = 0;
         }
         airdropEndTime = block.timestamp + _claimTime;
@@ -217,7 +219,11 @@ contract SonikPoapFacet is ERC721URIStorage {
     /// @return string URI of the token metadata
     function tokenURI(uint256 tokenId) public view override(ERC721URIStorage) returns (string memory) {
         _requireOwned(tokenId);
-        return string(string.concat(baseURI, "/", tokenId.toString()));
+        if (isCollection) {
+            return string(string.concat(baseURI, "/", tokenId.toString()));
+        } else {
+            return string(baseURI);
+        }
     }
 
     /// @notice Checks if contract supports an interface
@@ -225,5 +231,33 @@ contract SonikPoapFacet is ERC721URIStorage {
     /// @return bool True if interface is supported, false otherwise
     function supportsInterface(bytes4 interfaceId) public view override(ERC721URIStorage) returns (bool) {
         return super.supportsInterface(interfaceId);
+    }
+
+    function getPoapInfo()
+        public
+        view
+        returns (
+            string memory _baseURI,
+            string memory name,
+            address creatorAddress,
+            uint256 totalClaimed,
+            uint256 totalClaimable,
+            uint256 pectanageClaimed,
+            uint256 _creationTime
+        )
+    {
+        return (
+            baseURI,
+            _name,
+            owner,
+            totalNoOfClaimed,
+            totalNoOfClaimers,
+            getPercentage(totalNoOfClaimed, totalNoOfClaimers),
+            creationTime
+        );
+    }
+
+    function getPercentage(uint256 x, uint256 y) public pure returns (uint256) {
+        return (x * 10000 / y);
     }
 }

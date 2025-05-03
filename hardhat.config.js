@@ -25,7 +25,7 @@ module.exports = {
       accounts: [process.env.private_key], 
     },
     electroneumTestnet: {
-      url: process.env.electroneum_testnet_RPC_URL2,
+      url: process.env.electroneum_testnet_RPC_URL,
       chainId: 5201420,
       accounts: [process.env.private_key], 
     },
