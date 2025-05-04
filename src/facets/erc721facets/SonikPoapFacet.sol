@@ -35,7 +35,7 @@ contract SonikPoapFacet is ERC721URIStorage {
 
     string internal baseURI;
 
-    mapping(address => bool) hasUserClaimedAirdrop;
+    mapping(address => bool) public hasUserClaimedAirdrop;
 
     /// @notice Initializes the POAP contract with required parameters
     /// @param _name Name of the POAP token

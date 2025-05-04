@@ -271,4 +271,38 @@ contract SonikDrop {
         airdropEndTime = block.timestamp + _claimTime;
         emit Events.ClaimTimeUpdated(msg.sender, _claimTime, airdropEndTime);
     }
+
+    function getDropInfo()
+        public
+        view
+        returns (
+            string memory _name,
+            address creatorAddress,
+            uint256 totalClaimed,
+            uint256 totalClaimable,
+            uint256 pectanageClaimed,
+            uint256 totalClaimedtoken,
+            uint256 totalClaimabletoken,
+            uint256 pectanageClaimedtoken,
+            uint256 _creationTime,
+            bool _hasOwnerWithdrawn
+        )
+    {
+        return (
+            name,
+            owner,
+            totalNoOfClaimed,
+            totalNoOfClaimers,
+            getPercentage(totalNoOfClaimed, totalNoOfClaimers),
+            totalOutputTokens,
+            totalAmountSpent,
+            getPercentage(totalAmountSpent, totalOutputTokens),
+            creationTime,
+            hasOwnerWithdrawn
+        );
+    }
+
+    function getPercentage(uint256 x, uint256 y) public pure returns (uint256) {
+        return (x * 10000 / y);
+    }
 }
