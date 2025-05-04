@@ -1,37 +1,24 @@
 ## Deployed Contract Addresses
 ### Networks
-- **Lisk Sepolia**
 - **Base Sepolia**
 - **Kaia (Kaia Testnet / Kairos)**
 - **ETH Sepolia**
 - **Sonic Blaze Testnet**
-- **Electroneum Testnet**
-- 
+
+
 
 ### Verified Contracts
 - **AirdropFactoryFacet**  
-  Deployed at: `0x60C0f4B77A638967Dd8Ea2bDdB024168639D1049`
+  Deployed at: `0xa7b866BF15Cb626568F82e1D2e53Fc25d93a7f34`
 - **PoapFactoryFacet**  
-  Deployed at: `0x6C57B5A93e5f05fB0c4Ecc70494Bc3dB8cE4ac84`
-### Verified Contracts for sonic Blaze
-- **AirdropFactoryFacet**  
-  Deployed at: `0x27237eb0616f1aA6Cf6D44f6796e41300D64d81b`
-- **PoapFactoryFacet**  
-  Deployed at: `0x9a4346DdA58198D663F94c9Bd3eD95374336EAb2`
+  Deployed at: `0x5A4b4b8Bed1087D6F2De87177341ea27F06Bdb24`
+
+
 
 ### Verified Contracts for kairos
 >> createX is not avaliable on kairos
-- **AirdropFactoryFacet**  
-  Deployed at: `0xC0fb1654128283e503B60bcCEaC3df015f060C34`
 - **PoapFactoryFacet**  
-  Deployed at: `0x120C1119aa70Eb957a5FF136E2e6c1810A90Bd22`
-
-### Verified Contracts for Electroneum Testnet
->> createX is not avaliable on Electroneum Testnet
-- **AirdropFactoryFacet**  
-  Deployed at: `0x6E269Ee68bB6B29C5ba9e7c9c72ec5626421Ce0E`
-- **PoapFactoryFacet**  
-  Deployed at: `0x0C6883a9dCC4927Fc293470728FAa6665637E16b`
+  Deployed at: `0x4F3B1F2e5f9a46EE2b9EcB4E0D72188ac008B28b`
 
 
 

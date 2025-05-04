@@ -13,11 +13,11 @@ contract AirdropFactoryFacet {
     using SafeERC20 for IERC20;
     /// @dev Counter for total number of clones created
 
-    uint256 cloneCount;
+    uint256 public cloneCount;
     /// @dev Mapping of owner addresses to their SonikDrop clone contracts
-    mapping(address => address[]) ownerToSonikDropCloneContracts;
+    mapping(address => address[]) public ownerToSonikDropCloneContracts;
     /// @dev Array containing addresses of all SonikDrop clones
-    address[] allSonikDropClones;
+    address[] public allSonikDropClones;
 
     /// @notice Creates a new SonikDrop instance with specified parameters
     /// @dev Internal function to handle the creation logic

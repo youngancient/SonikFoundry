@@ -18,6 +18,13 @@ deploy-blaze:
 		--etherscan-api-key $(ETHERSCAN_API_KEY) \
 		--verify \
 		--broadcast
+
+runner-blaze:
+	@forge script script/simulation.s.sol:Runner \
+		--rpc-url $(BLAZE_RPC_URL) \
+		--broadcast \
+		--private-key $(private_key) 
+		
 		
 
 # Deploy to Base Sepolia
@@ -49,4 +56,9 @@ deploy-kairos:
 		--verifier-url https://sourcify.dev/server/ \
 		--private-key $(private_key) \
 		--broadcast \
-		--verify
+		--verify \
+		--gas-limit 17000000 \
+		--gas-price 60  \
+		--legacy
+
+
