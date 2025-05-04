@@ -233,7 +233,7 @@ contract SonikPoapFacet is ERC721URIStorage {
         return super.supportsInterface(interfaceId);
     }
 
-    function getPoapInfo()
+    function getPoapInfo(address user)
         public
         view
         returns (
@@ -243,7 +243,8 @@ contract SonikPoapFacet is ERC721URIStorage {
             uint256 totalClaimed,
             uint256 totalClaimable,
             uint256 pectanageClaimed,
-            uint256 _creationTime
+            uint256 _creationTime,
+            bool _hasUserClaimedAirdrop
         )
     {
         return (
@@ -253,7 +254,8 @@ contract SonikPoapFacet is ERC721URIStorage {
             totalNoOfClaimed,
             totalNoOfClaimers,
             getPercentage(totalNoOfClaimed, totalNoOfClaimers),
-            creationTime
+            creationTime,
+            hasUserClaimedAirdrop[user]
         );
     }
 
