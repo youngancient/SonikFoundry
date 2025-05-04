@@ -272,7 +272,7 @@ contract SonikDrop {
         emit Events.ClaimTimeUpdated(msg.sender, _claimTime, airdropEndTime);
     }
 
-    function getDropInfo()
+    function getDropInfo(address user)
         public
         view
         returns (
@@ -285,7 +285,8 @@ contract SonikDrop {
             uint256 totalClaimabletoken,
             uint256 pectanageClaimedtoken,
             uint256 _creationTime,
-            bool _hasOwnerWithdrawn
+            bool _hasOwnerWithdrawn,
+            bool _hasUserClaimedAirdrop
         )
     {
         return (
@@ -298,7 +299,8 @@ contract SonikDrop {
             totalAmountSpent,
             getPercentage(totalAmountSpent, totalOutputTokens),
             creationTime,
-            hasOwnerWithdrawn
+            hasOwnerWithdrawn,
+            hasUserClaimedAirdrop[user]
         );
     }
 

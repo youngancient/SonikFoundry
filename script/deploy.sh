@@ -16,7 +16,7 @@ make deploy-sepolia || { echo "deploy-sepolia failed"; exit 1; }
 make deploy-blaze || { echo "deploy-blaze failed"; exit 1; }
 # make runner-blaze || { echo "runner-blaze failed"; exit 1; }
 make deploy-base-sepolia || { echo "deploy-base-sepolia failed"; exit 1; }
-make deploy-lisk-sepolia || { echo "deploy-lisk-sepolia failed"; exit 1; }
-make deploy-kairos || { echo "deploy-kairos failed"; exit 1; }
+# make deploy-lisk-sepolia || { echo "deploy-lisk-sepolia failed"; exit 1; }
+# make deploy-kairos || { echo "deploy-kairos failed"; exit 1; }
 
 echo "✅ All deployments completed successfully!"

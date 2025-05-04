@@ -10,10 +10,12 @@ fs_permissions = [{ access = "read", path = "./script" }]
 # See more config options https://github.com/foundry-rs/foundry/tree/master/config
 optimizer = true
 optimizer_runs = 200
+via_ir = true
+
 [etherscan]
 57054 = { key = "${SONICBLAST_API_KEY}", url = "https://api-testnet.sonicscan.org/api" }
 84532 = { key = "${BASESCAN_API_KEY}", url = "https://api-sepolia.basescan.org/api" }
-1001 = { key = "nes", url = "hhttps://api-baobab.klaytnscope.com/api" }
+1001 = { key = "nes", url = "https://api-baobab.klaytnscope.com/api" }
 4202 = { key = "${LISK_API_KEY}", url = "https://sepolia-blockscout.lisk.com/api" }
 11155111 = { key = "${ETHERSCAN_API_KEY}", url = "https://api-sepolia.etherscan.io/api" }
 5201420 = { key = "${ETHERSCAN_API_KEY}", url = "https://blockexplorer.thesecurityteam.rocks/api" }
