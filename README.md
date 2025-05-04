@@ -19,9 +19,9 @@
 ### Verified Contracts for kairos
 >> createX is not avaliable on kairos
 - **AirdropFactoryFacet**  
-  Deployed at: `0xcc80612507d2506a36e7AfcA21AD9d63BdDc1F4A`
+  Deployed at: `0x64Aa1f6657F93D17Bc6c11Cb2BF732c39031e064`
 - **PoapFactoryFacet**  
-  Deployed at: `0x4F3B1F2e5f9a46EE2b9EcB4E0D72188ac008B28b`
+  Deployed at: `0x49947BE492E984940Eb361C9CB3d43C2dAa87823`
 
 
 
