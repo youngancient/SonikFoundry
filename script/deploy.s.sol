@@ -12,8 +12,8 @@ contract SoniKDeployer is Script {
     AirdropFactoryFacet airdropFactoryFacet;
     PoapFactoryFacet poapFactoryFacet;
 
-    bytes32 constant SALT_AIRDROP = keccak256("SonikDropAirdrop-FactoryFacet");
-    bytes32 constant SALT_POAP = keccak256("SonikDrop-PoapFactoryFacet");
+    bytes32 constant SALT_AIRDROP = keccak256("SonikDropAirdropFactoryFacet");
+    bytes32 constant SALT_POAP = keccak256("SonikDropPoapFactoryFacet");
 
     function run() external {
         vm.startBroadcast();

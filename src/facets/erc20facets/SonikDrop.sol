@@ -280,13 +280,13 @@ contract SonikDrop {
             address creatorAddress,
             uint256 totalClaimed,
             uint256 totalClaimable,
-            uint256 pectanageClaimed,
             uint256 totalClaimedtoken,
             uint256 totalClaimabletoken,
-            uint256 pectanageClaimedtoken,
             uint256 _creationTime,
+            uint256 _endtime,
             bool _hasOwnerWithdrawn,
-            bool _hasUserClaimedAirdrop
+            bool _hasUserClaimedAirdrop,
+            address _nftAddress
         )
     {
         return (
@@ -294,13 +294,13 @@ contract SonikDrop {
             owner,
             totalNoOfClaimed,
             totalNoOfClaimers,
-            getPercentage(totalNoOfClaimed, totalNoOfClaimers),
             totalOutputTokens,
             totalAmountSpent,
-            getPercentage(totalAmountSpent, totalOutputTokens),
             creationTime,
+            airdropEndTime,
             hasOwnerWithdrawn,
-            hasUserClaimedAirdrop[user]
+            hasUserClaimedAirdrop[user],
+            nftAddress
         );
     }
 
