@@ -1,22 +1,19 @@
 #!/bin/bash
 
-# Load environment variables from .env file
-if [ -f .env ]; then
-  echo "Loading .env..."
-  export $(grep -v '^#' .env | xargs)
-else
-  echo ".env file not found! Exiting..."
-  exit 1
-fi
+# List of all networks to deploy on
+NETWORKS=("sonicTestnet" "kairos" "electroneumTestnet" "basesepolia" "sepolia" "lisksepolia")
 
-# Run Makefile targets one after the other
-echo "Starting deployments..."
+# Path to your Ignition module
+MODULE_PATH="./ignition/modules/deploy.js"
 
-make deploy-sepolia || { echo "deploy-sepolia failed"; exit 1; }
-make deploy-blaze || { echo "deploy-blaze failed"; exit 1; }
-# make runner-blaze || { echo "runner-blaze failed"; exit 1; }
-make deploy-base-sepolia || { echo "deploy-base-sepolia failed"; exit 1; }
-# make deploy-lisk-sepolia || { echo "deploy-lisk-sepolia failed"; exit 1; }
-# make deploy-kairos || { echo "deploy-kairos failed"; exit 1; }
-
-echo "✅ All deployments completed successfully!"
+# Loop through each network and deploy
+for network in "${NETWORKS[@]}"
+do
+  echo "🔧 Deploying to $network..."
+  if npx hardhat ignition deploy $MODULE_PATH --network "$network" --verify --reset --strategy create2; then
+    echo "✅ Successfully deployed to $network"
+  else
+    echo "❌ Deployment failed on $network"
+  fi
+  echo "----------------------------------------"
+done

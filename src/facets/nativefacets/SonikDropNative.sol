@@ -277,10 +277,8 @@ contract SonikDropNative is ReentrancyGuard {
             address creatorAddress,
             uint256 totalClaimed,
             uint256 totalClaimable,
-            uint256 pectanageClaimed,
             uint256 totalClaimedtoken,
             uint256 totalClaimabletoken,
-            uint256 pectanageClaimedtoken,
             uint256 _creationTime,
             bool _hasOwnerWithdrawn
         )
@@ -290,10 +288,10 @@ contract SonikDropNative is ReentrancyGuard {
             owner,
             totalNoOfClaimed,
             totalNoOfClaimers,
-            getPercentage(totalNoOfClaimed, totalNoOfClaimers),
+           
             totalOutputNativeCoins,
             totalAmountSpent,
-            getPercentage(totalAmountSpent, totalOutputNativeCoins),
+            
             creationTime,
             hasOwnerWithdrawn
         );
